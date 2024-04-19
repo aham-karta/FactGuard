@@ -15,6 +15,8 @@ const Sidebar = () => {
             <h1 className="text-3xl font-bold text-white mt-2">
               Fact<span className="text-[#8DECB4]">Guard</span>
             </h1>
+            <img src={session.data.user.image} className="rounded-full mt-16 border-[#8DECB4] border-2"></img>
+            <h2 className="text-white mt-3 text-lg">Hello, {session.data.user.name}!</h2>
             <div className="mt-12 w-full">
       <button
         className="flex pt-2 flex-row text-lg justify-center w-full h-12 text-[#8DECB4] hover:bg-[#2c3347] hover:text-white transition-all duration-300 ease-in-out text-center rounded-xl" onClick={()=>{router.push("/dashboard")}}
@@ -27,7 +29,7 @@ const Sidebar = () => {
         <span className="">History</span>
       </button>
       </div>
-      <button className="text-[#8DECB4] mt-[60vh]" onClick={async()=>{await signOut();router.push("/")}}><img className="rounded-full bg-red-400 p-2 w-12 transition-all duration-1000 ease-in-out" src="https://i.ibb.co/ZXQJ9FX/logout.png"></img></button>
+      <button className="text-[#8DECB4] mt-72" onClick={async()=>{await signOut();router.push("/")}}><img className="rounded-full bg-red-400 p-2 w-12 transition-all duration-1000 ease-in-out" src="https://i.ibb.co/ZXQJ9FX/logout.png"></img></button>
     </div>
     </div>
   );
