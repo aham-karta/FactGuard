@@ -5,17 +5,10 @@ import { useRouter } from 'next/navigation'; // Corrected import path
 const Sidebar = () => {
   const session = useSession();
   const router = useRouter();
-  
-  const handleSignout = async () => {
-    await signOut();
-    router.push("/"); // Redirect to home page after signout
-  };
-
-  const [isClicked, setIsClicked] = useState(false);
-  const toggleVisibility = () => {
-    setIsClicked(!isClicked);
-  };
-
+  if(session.status==="unauthenticated"){
+    router.push("/")
+  }
+  if(session.status==="authenticated"){
   return (
     <div className="top-0 left-0 fixed h-full w-64 bg-[#181b2b] flex flex-col border-[#8DECB4] rounded-r-xl border-2">
       <div className="flex items-center flex-col">
@@ -35,8 +28,9 @@ const Sidebar = () => {
       </button>
       </div>
     </div>
+    <button onClick={async()=>{await signOut();router.push("/")}}>log out</button>
     </div>
   );
-};
+};}
 
 export default Sidebar;

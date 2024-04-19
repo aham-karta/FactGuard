@@ -16,13 +16,15 @@ const videoId = parts[1];
 console.log(videoId);
     router.push(`/dashboard?v=${videoId}`);
   }
+  if(session.status==="unauthenticated"){
+    router.push("/signup")
+  }
 };
 
 
     if (session.status === "loading") {
       return <h2>Loading</h2>;
     }
-
     return (
       <div className={`h-screen flex flex-col bg-[#181b2b]`}>
         <header className="navbar flex justify-around items-center p-4">
@@ -31,7 +33,7 @@ console.log(videoId);
               Fact<span className="text-[#8DECB4]">Guard</span>
             </h1>
           </div>
-          <div className="flex items-center space-x-6">
+          {session.status==="unauthenticated" && (<div className="flex items-center space-x-6">
               <>
                 <button onClick={() => router.push("/signin")} className="text-white nav-link hover:text-[#8DECB4] duration-300 transition-all ease-in-out text-xl">
                   Login
@@ -40,7 +42,7 @@ console.log(videoId);
                   Get Started
                 </button>
               </>
-          </div>
+          </div>)}
         </header>
 
         <main className="flex-grow flex justify-center items-center">
