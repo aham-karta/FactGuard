@@ -27,8 +27,8 @@ const Sidebar = () => {
         <span className="">History</span>
       </button>
       </div>
+      <button className="text-[#8DECB4] mt-[60vh]" onClick={async()=>{await signOut();router.push("/")}}><img className="w-12 hover:w-14 transition-all duration-1000 ease-in-out" src="https://i.ibb.co/ZXQJ9FX/logout.png"></img></button>
     </div>
-    <button onClick={async()=>{await signOut();router.push("/")}}>log out</button>
     </div>
   );
 };}
