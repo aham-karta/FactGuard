@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation'; // Corrected import path
+import { useRouter } from 'next/navigation'; 
 
 const Sidebar = () => {
   const session = useSession();
