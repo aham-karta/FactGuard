@@ -23,8 +23,13 @@ console.log(videoId);
 
 
     if (session.status === "loading") {
-      return <h2>Loading</h2>;
+      return (
+      <div className="flex justify-center mt-56">
+      <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2N4eWw2c3F0dnRkcDJqMDNyNWdsanIxeHh4dmdudHRlZ2Z0dzB4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/zFwqvI1atpDkLPhBgY/giphy.gif"></img>
+      </div>
+    )
     }
+
     return (
       <div className={`h-screen flex flex-col bg-[#181b2b]`}>
         <header className="navbar flex justify-around items-center p-4">

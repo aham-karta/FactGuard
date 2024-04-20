@@ -1,9 +1,24 @@
 "use client"
 import { useSearchParams } from 'next/navigation';
+import {useSession } from 'next-auth/react'
+import {useRouter} from 'next/navigation'
 const HomePage = () => {
     const searchParams = useSearchParams();
     const search = searchParams.get('v');
+    const session = useSession()
+    const router=useRouter()
     console.log("it is "+search)
+    if (session.status === "loading") {
+        return (
+        <div className="fixed top-[25.5vh] left-[41.5vw]">
+        <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2N4eWw2c3F0dnRkcDJqMDNyNWdsanIxeHh4dmdudHRlZ2Z0dzB4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/zFwqvI1atpDkLPhBgY/giphy.gif"></img>
+        </div>
+      )
+      }
+      if(session.status==="unauthenticated"){
+        router.push("/signup")
+      }
+      if(session.status==="authenticated"){
     return (
     <div className="bg-[#181b2b] w-full h-full pl-4 text-white">
     <div className="flex flex-row">
@@ -19,6 +34,6 @@ const HomePage = () => {
     </div>
     
     );
-};
+};}
 
 export default HomePage;
