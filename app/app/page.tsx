@@ -10,6 +10,9 @@ export default function Home() {
     const router = useRouter();
 
 const submitLink = async () => {
+  if(link.trim()===""){
+    return alert("URL cannot be empty")
+  }
   if (session.status === "authenticated") {
 const parts = link.split("=");
 const videoId = parts[1];
@@ -68,7 +71,6 @@ console.log(videoId);
                 name="url"
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
-                required
               />
               <button
                 onClick={submitLink}

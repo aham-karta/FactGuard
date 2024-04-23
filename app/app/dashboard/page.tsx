@@ -2,12 +2,22 @@
 import { useSearchParams } from 'next/navigation';
 import {useSession } from 'next-auth/react'
 import {useRouter} from 'next/navigation'
+import {useState,useEffect} from 'react'
+import axios from 'axios'
+
 const HomePage = () => {
     const searchParams = useSearchParams();
     const search = searchParams.get('v');
     const session = useSession()
     const router=useRouter()
-    console.log("it is "+search)
+    const [validation,set_validation]=useState()
+    //console.log("it is "+search)
+
+      const validate=async()=>{
+        const response = await axios.post("http://localhost:8000/api/guard-the-fact",{url:search})
+        set_validation(response.data.final)
+      }
+
     if (session.status === "loading") {
         return (
         <div className="fixed top-[25.5vh] left-[41.5vw]">
@@ -16,15 +26,15 @@ const HomePage = () => {
       )
       }
       if(session.status==="unauthenticated"){
-        router.push("/signup")
+        router.push("/signin")
       }
-      if(session.status==="authenticated"){
+        console.log(validation)
     return (
     <div className="bg-[#181b2b] w-full h-full pl-4 text-white">
     <div className="flex flex-row">
         <div className="w-8/12 h-[98vh] rounded-xl border-[#8DECB4] border-2 ml-2 mt-2 mb-2 pl-2 pr-2 pt-2">
-        <div className="bg-[#2e3352] rounded-xl w-full h-[87vh] pl-2 pr-2 pb-2 text-lg overflow-y-auto">smtg eher ot cjeck paddng </div>
-        <textarea className="bg-[#2e3352] rounded-xl w-full h-16 mt-2 outline-none pl-2 max-h-16 min-h-16 text-lg"></textarea>
+        <div className="bg-[#2e3352] rounded-xl w-full h-[87vh] pl-2 pr-2 pb-2 text-lg overflow-y-auto">{validation}</div>
+        <button onClick={validate} className="bg-[#8DECB4] rounded-xl w-full h-16 mt-2 outline-none pl-2 max-h-16 min-h-16 text-xl text-black font-bold">Proceed</button>
         </div>
         <div className="w-4/12 max-h-[98vh] h-[98vh] rounded-xl border-[#8DECB4] border-2 mt-2 mb-2 ml-2 mr-2">
         <iframe className="w-full rounded-t-xl h-80 border-b border-[#8DECB4]" src={`https://www.youtube.com/embed/${search}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -34,6 +44,6 @@ const HomePage = () => {
     </div>
     
     );
-};}
+};
 
 export default HomePage;

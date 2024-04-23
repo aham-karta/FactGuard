@@ -9,6 +9,9 @@ import google.generativeai as genai
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_community.llms import Ollama
+import requests
+from tavily import TavilyClient
+
 
 app=FastAPI()
 app.add_middleware(
@@ -19,48 +22,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def get_top_3_websites(query):
-    try:
-        search_results = search(query, num_results=3)
-        return search_results
-    except Exception as e:
-        print("An error occurred:", e)
-sites_send=[]
 @app.post("/api/guard-the-fact")
 async def run(req_body: dict):
-    data=[]
+    data = []
     print(req_body["url"])
-    index = req_body["url"].find("=")
-    video_id = req_body["url"][index+1:]
-    transcript = YouTubeTranscriptApi.get_transcript(video_id)
-    full=""
+    transcript = YouTubeTranscriptApi.get_transcript(req_body["url"])
+    full = ""
     for i in transcript:
-        full+=i["text"]+" "
-    print(full)
-    #load_dotenv()
+        full += i["text"] + " "
+    full="i woke up to a sad news that narendra modi passed away"
+    # load_dotenv()
     llm = Ollama(model="llama2")
-    response=llm.invoke(full+ " generate one question to ask a search engine about the above information - return a string")
-    final = response
-    print(final)
-    print()
-    print()
-    sites = get_top_3_websites(final)
-    for i in sites:
-        print(i)
-        sites_send.append(i)
-    for i in sites:
-        browser = await launch()
-        page = await browser.newPage()
-        await page.goto(i, timeout=100000)
-        text_content = await page.evaluate('''() => {
-            return document.body.innerText;
-        }''')
-        data.append(text_content)
-        await browser.close()
-    text_data=""
-    print(data)
-    response = llm.invoke(text_data + "(this is the correct data) - based on this data tell me if this contains any factual errors - give response as if you're a fact validator - if yes, specify every factual error and state the truth from this (give response in 100 words) ... if the provided 'to-be-verified-data' does not match with the 'verified-data-true-data' consider it as a factual error "+full+" RETURN THE ANSWER LIKE YOU'RE A FACT CHECKER")
-    print(response)
-    print()
-    print()
-    return response
+    question = llm.invoke(f"generate a one liner question based on this context - {full}")
+    tavily = TavilyClient(api_key="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")
+    response = tavily.search(query=question, search_depth="advanced", include_answer=True,include_images=True)
+    #print(response)
+    final=llm.invoke(f"[true data]: {response['answer']} - [unsure data]:{full} - you are a fact validator known as FactGuard - compare the true data with unsure data and return if there are any factual inaccuracies")
+    return {"final":final,"links":response["results"],"images":response["images"]}

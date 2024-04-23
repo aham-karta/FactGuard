@@ -14,7 +14,7 @@ const SignInPage = () => {
             console.log(response.data)
     }
     if(session.status==="authenticated"){
-        router.push("/dashboard")
+        router.push("/")
     }
     if (session.status === "loading") {
         return (
