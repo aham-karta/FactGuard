@@ -124,7 +124,7 @@ async def run(req_body: dict):
                 }
                 ],
                 temperature=0.1,
-                max_tokens=256,
+                max_tokens=4096,
                 top_p=1,
                 stream=True,
                 stop=None,
