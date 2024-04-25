@@ -2,7 +2,6 @@ from typing import List
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from youtube_transcript_api import YouTubeTranscriptApi
-from openai import OpenAI
 from tavily import TavilyClient
 from dotenv import load_dotenv
 import os
