@@ -45,7 +45,7 @@ async def run(req_body: dict):
         }
     ],
     temperature=0.1,
-    max_tokens=256,
+    max_tokens=8192,
     top_p=1,
     stream=True,
     stop=None,
@@ -138,9 +138,30 @@ async def run(req_body: dict):
     final_response=""
     for data in final_data:
         final_response+=data
+    completion = client.chat.completions.create(
+    model="llama3-70b-8192",
+    messages=[
+                {
+                    "role": "system",
+                    "content": "eliminate the points that repeat more than once and return the answer without bold and asterisks"
+                },
+                {
+                    "role": "user",
+                    "content": final_response
+                }
+                ],
+                temperature=0.1,
+                max_tokens=4096,
+                top_p=1,
+                stream=True,
+                stop=None,
+                )
+    text3=""
+    for chunk in completion:
+        text3+=chunk.choices[0].delta.content or ""
     return {
         "score": 100,
-        "text": final_response,
+        "text": text3,
         "links":links,
         "images":images
     }

@@ -26,7 +26,7 @@ def check(update, context):
     if response.status_code == 200:
         context.bot.send_message(chat_id=update.effective_chat.id, text=response.json()["text"])
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Failed to guard the fact.")
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Failed")
 
 @app.route('/')
 def index():
