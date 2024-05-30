@@ -7,17 +7,18 @@ import axios from 'axios'
 import Home from '../page'
 const HomePage = () => {
   const searchParams = useSearchParams();
-  const search = searchParams.get('v');
+  var search = searchParams.get('v');
   const session = useSession();
   const router = useRouter();
   const [validation, set_validation] = useState();
   const [links, set_links] = useState([]);
   const [images, set_images] = useState([]);
-  const [loading, set_loading] = useState(false);
+  const [new_link,set_new_link]=useState("");
   
 
   const validate = async () => {
       //set_loading(true);
+      search = searchParams.get('v');
       const response = await axios.post("http://localhost:8000/api/guard-the-fact", { url: search });
       console.log(response.data)
       set_validation(response.data.text);
@@ -49,7 +50,10 @@ const HomePage = () => {
               </div>
               <div className="w-4/12 max-h-[98vh] h-[98vh] rounded-xl border-[#8DECB4] border-2 mt-2 mb-2 ml-2 mr-2">
                   <iframe className="w-full rounded-t-xl h-80 border-b border-[#8DECB4]" src={`https://www.youtube.com/embed/${search}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen title="YouTube video"></iframe>
-                  <button onClick={()=>{set_loading(false)}} className="mt-4 bg-[#8DECB4] ml-1 rounded-xl w-[27vw] h-16 mt-2 outline-none pl-2 max-h-16 min-h-16 text-xl text-black font-bold active:bg-[#181b2b] active:border-[#8DECB4] active:border-2 active:text-[#8DECB4]">+ New Video</button>
+                  <div className="flex flex-col items-center">
+                  <input className="mt-48 w-11/12 outline-none text-[#8DECB4] font-mono bg-transparent border-b-2 border-[#8DECB4] text-center placeholder:text-xl text-xl" placeholder="paste link here" type="text" onChange={(e)=>{set_new_link(e.target.value)}} value={new_link}></input>
+                  <button onClick={()=>{router.push("/dashboard?v="+new_link.slice(new_link.lastIndexOf('=') + 1))}} className="bg-[#8DECB4] rounded-xl w-11/12 h-16 mt-2 outline-none max-h-16 min-h-16 text-xl text-black font-bold active:bg-[#181b2b] active:border-[#8DECB4] active:border-2 active:text-[#8DECB4]">+ New Video</button>
+                  </div>
               </div>
           </div>
       </div>
