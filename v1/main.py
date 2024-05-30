@@ -10,7 +10,7 @@ from groq import Groq
 load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 tavily_api_key = os.getenv("TAVILY_API_KEY")
-client = Groq(api_key="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")
+client = Groq(api_key=groq_api_key)
 tavily_client = TavilyClient(api_key=tavily_api_key)
 
 app = FastAPI()
@@ -159,6 +159,12 @@ async def run(req_body: dict):
     text3=""
     for chunk in completion:
         text3+=chunk.choices[0].delta.content or ""
+    print({
+        "score": 100,
+        "text": text3,
+        "links":links,
+        "images":images
+    })
     return {
         "score": 100,
         "text": text3,
