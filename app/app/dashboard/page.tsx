@@ -17,18 +17,22 @@ const HomePage = () => {
   const [images, setImages] = useState<string[]>([]);
   const [newLink, setNewLink] = useState<string>('');
 
-  useEffect(() => {
-    if (search) {
-      validate();
-    }
-  }, [search]);
+  // useEffect(() => {
+  //   if (search) {
+  //     validate();
+  //   }
+  // }, [search]);
 
   const validate = async () => {
     const response = await axios.post("http://localhost:8000/api/guard-the-fact", { url: search });
     console.log(response.data);
     setValidation(response.data.text);
-    setLinks(response.data.links || []);
-    setImages(response.data.images || []);
+    setLinks(removeDuplicates(response.data.links || []));
+    setImages(removeDuplicates(response.data.images || []));
+  };
+
+  const removeDuplicates = (array: string[]) => {
+    return Array.from(new Set(array));
   };
 
   if (session.status === "loading") {
@@ -48,7 +52,37 @@ const HomePage = () => {
       <div className="flex flex-row">
         <div className="w-8/12 h-[98vh] rounded-xl border-[#8DECB4] border-2 ml-2 mt-2 mb-2 pl-2 pr-2 pt-2">
           <div className="bg-[#2e3352] rounded-xl w-full h-[87vh] pl-2 pr-2 pb-2 text-lg overflow-y-auto">
-            <h2 className="p-8 text-justify font-mono text-white">{validation}</h2>
+            {validation.length>0 &&(<div><h2 className="pt-4 pl-4 font-mono text-2xl underline">Summary - </h2>
+            <h2 className="p-8 text-justify font-mono text-white">{validation}</h2></div>)}
+            <div>
+              {images.length > 0 && (
+                <div>
+                  <h3 className="pt-4 pl-4 font-mono text-2xl underline">Images - </h3>
+                  <div className="p-4 grid grid-cols-2 gap-4">
+                    {images.map((image, index) => (
+                      <div>
+                    <img key={index} src={image} alt={`image-${index}`} className="w-full h-auto rounded-lg" />
+                    <br></br>
+                    </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {links.length > 0 && (
+                <div>
+                  <h3 className="pt-4 pl-4 font-mono text-2xl underline">Links - </h3>
+                  <ul className="p-4 list-disc list-inside">
+                    {links.map((link, index) => (
+                      <div>
+                      <a href={link} target="_blank" rel="noopener noreferrer" className="text-[#8DECB4] hover:underline font-mono">{link}</a>
+                      <br></br>
+                      <br></br>
+                      </div>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
           <button onClick={validate} className="bg-[#8DECB4] rounded-xl w-full h-16 mt-2 outline-none pl-2 max-h-16 min-h-16 text-xl text-black font-bold active:bg-[#181b2b] active:border-[#8DECB4] active:border-2 active:text-[#8DECB4]">Proceed</button>
         </div>
