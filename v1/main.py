@@ -85,8 +85,10 @@ async def run(req_body: dict):
             if(text2=="no"):
                 print("verifying with tavily api ...")
                 tavily = TavilyClient(api_key=tavily_api_key)
-                response = tavily.search(query=question, search_depth="advanced", include_answer=True, include_images=True)
+                response = tavily.search(query=question, search_depth="advanced", include_answer=True, include_images=True,max_results=1)
                 answer = response["answer"]
+                images.append(response["images"][0])
+                links.append(response["results"][0]["url"])
                 completion = client.chat.completions.create(
                 model="llama3-70b-8192",
                 messages=[
