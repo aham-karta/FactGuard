@@ -13,26 +13,24 @@ const HomePage = () => {
   const session = useSession();
   const router = useRouter();
   const [validation, setValidation] = useState<string>('');
-  const [links, setLinks] = useState<string[]>([]);
+  const [links, setLinks] = useState<{ title: string, url: string }[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [newLink, setNewLink] = useState<string>('');
+  const [newScore, setNewScore] = useState<number>(0);
 
-  // useEffect(() => {
-  //   if (search) {
-  //     validate();
-  //   }
-  // }, [search]);
+  useEffect(() => {
+    if (search) {
+      validate();
+    }
+  }, [search]);
 
   const validate = async () => {
     const response = await axios.post("http://localhost:8000/api/guard-the-fact", { url: search });
     console.log(response.data);
     setValidation(response.data.text);
-    setLinks(removeDuplicates(response.data.links || []));
-    setImages(removeDuplicates(response.data.images || []));
-  };
-
-  const removeDuplicates = (array: string[]) => {
-    return Array.from(new Set(array));
+    setLinks(response.data.hyper || []);
+    setImages(response.data.images || []);
+    setNewScore(response.data.score || 0);
   };
 
   if (session.status === "loading") {
@@ -52,36 +50,30 @@ const HomePage = () => {
       <div className="flex flex-row">
         <div className="w-8/12 h-[98vh] rounded-xl border-[#8DECB4] border-2 ml-2 mt-2 mb-2 pl-2 pr-2 pt-2">
           <div className="bg-[#2e3352] rounded-xl w-full h-[87vh] pl-2 pr-2 pb-2 text-lg overflow-y-auto">
-            {validation.length>0 &&(<div><h2 className="pt-4 pl-4 font-mono text-2xl underline">Summary - </h2>
-            <h2 className="p-8 text-justify font-mono text-white">{validation}</h2></div>)}
+            <h2 className="p-8 text-justify font-mono text-white">{validation}</h2>
             <div>
-              {images.length > 0 && (
-                <div>
-                  <h3 className="pt-4 pl-4 font-mono text-2xl underline">Images - </h3>
-                  <div className="p-4 grid grid-cols-2 gap-4">
-                    {images.map((image, index) => (
-                      <div>
-                    <img key={index} src={image} alt={`image-${index}`} className="w-full h-auto rounded-lg" />
-                    <br></br>
-                    </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {links.length > 0 && (
-                <div>
-                  <h3 className="pt-4 pl-4 font-mono text-2xl underline">Links - </h3>
-                  <ul className="p-4 list-disc list-inside">
-                    {links.map((link, index) => (
-                      <div>
-                      <a href={link} target="_blank" rel="noopener noreferrer" className="text-[#8DECB4] hover:underline font-mono">{link}</a>
-                      <br></br>
-                      <br></br>
-                      </div>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <h3>Links - </h3><br></br>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+  {links.map((linkData, index) => (
+    <li key={index}>
+      <button
+        onClick={() => window.open(linkData.url, '_blank')}
+        className="w-full bg-[#181b2b] border-[#8DECB4] border text-white font-mono p-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 h-24 overflow-hidden"
+      >
+        {linkData.title}
+      </button>
+    </li>
+  ))}
+</ul>
+
+<br></br>
+              <h3>Images - </h3><br></br>
+              <div className="flex flex-wrap">
+                {images.map((image, index) => (
+                  <img key={index} src={image} alt={`image-${index}`} className="transition-all duration-300 w-auto h-24 m-2 border-2 border-[#8DECB4] rounded-lg hover:scale-105" />
+                ))}
+              </div><br></br>
+              <h3>Score - {newScore}% Accurate</h3>
             </div>
           </div>
           <button onClick={validate} className="bg-[#8DECB4] rounded-xl w-full h-16 mt-2 outline-none pl-2 max-h-16 min-h-16 text-xl text-black font-bold active:bg-[#181b2b] active:border-[#8DECB4] active:border-2 active:text-[#8DECB4]">Proceed</button>
